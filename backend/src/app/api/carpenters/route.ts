@@ -20,11 +20,11 @@ export async function GET(request: NextRequest) {
 
     const where = search ? {
       OR: [
-        { user: { name: { contains: search, mode: 'insensitive' } } },
-        { user: { email: { contains: search, mode: 'insensitive' } } },
-        { companyName: { contains: search, mode: 'insensitive' } },
+        { user: { name: { contains: search, mode: 'insensitive' as const } } },
+        { user: { email: { contains: search, mode: 'insensitive' as const } } },
+        { companyName: { contains: search, mode: 'insensitive' as const } },
       ]
-    } : {}
+    } : undefined
 
     const [carpenters, total] = await Promise.all([
       prisma.carpenter.findMany({
