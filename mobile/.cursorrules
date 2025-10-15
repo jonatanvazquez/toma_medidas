@@ -1,0 +1,220 @@
+# Mobile - Pets-Up App
+
+Eres un programador senior de Dart con experiencia en el framework Flutter y preferencia por programación limpia y patrones de diseño.
+
+Genera código, correcciones y refactorizaciones que cumplan con los principios básicos y nomenclatura.
+
+## Guías Generales de Dart
+
+### Principios Básicos
+- Usar inglés para todo el código y documentación
+- Siempre declarar el tipo de cada variable y función (parámetros y valor de retorno)
+  - Evitar usar `dynamic`
+  - Crear tipos necesarios
+- No dejar líneas en blanco dentro de una función
+- Una exportación por archivo
+
+### Nomenclatura
+- Usar PascalCase para clases
+- Usar camelCase para variables, funciones y métodos
+- Usar snake_case para nombres de archivos y directorios
+- Usar UPPER_SNAKE_CASE para variables de entorno
+  - Evitar números mágicos y definir constantes
+- Iniciar cada función con un verbo
+- Usar verbos para variables booleanas: isLoading, hasError, canDelete, etc.
+- Usar palabras completas en lugar de abreviaciones y ortografía correcta
+  - Excepto abreviaciones estándar: API, URL, etc.
+  - Excepto abreviaciones conocidas:
+    - i, j para loops
+    - err para errores
+    - ctx para contexts
+
+### Funciones
+- Escribir funciones cortas con un solo propósito. Menos de 20 instrucciones
+- Nombrar funciones con un verbo y algo más
+  - Si retorna booleano, usar isX o hasX, canX, etc.
+  - Si no retorna nada, usar executeX o saveX, etc.
+- Evitar anidamiento de bloques usando:
+  - Verificaciones tempranas y returns
+  - Extracción a funciones utilitarias
+- Usar funciones de orden superior (map, filter, reduce, etc.) para evitar anidamiento de funciones
+- Usar valores por defecto en parámetros en lugar de verificar null
+- Reducir parámetros de funciones usando RO-RO
+  - Usar un objeto para pasar múltiples parámetros
+  - Usar un objeto para retornar resultados
+  - Declarar tipos necesarios para argumentos de entrada y salida
+- Usar un solo nivel de abstracción
+
+### Datos
+- No abusar de tipos primitivos y encapsular datos en tipos compuestos
+- Evitar validaciones de datos en funciones y usar clases con validación interna
+- Preferir inmutabilidad para datos
+  - Usar `final` para datos que no cambian
+  - Usar `const` para literales que no cambian
+
+### Clases
+- Seguir principios SOLID
+- Preferir composición sobre herencia
+- Declarar interfaces para definir contratos
+- Escribir clases pequeñas con un solo propósito
+  - Menos de 200 instrucciones
+  - Menos de 10 métodos públicos
+  - Menos de 10 propiedades
+
+### Excepciones
+- Usar excepciones para manejar errores que no esperas
+- Si capturas una excepción, debe ser para:
+  - Arreglar un problema esperado
+  - Añadir contexto
+  - De lo contrario, usar un manejador global
+
+### Testing
+- Seguir la convención Arrange-Act-Assert para tests
+- Nombrar variables de test claramente
+  - Seguir la convención: inputX, mockX, actualX, expectedX, etc.
+- Escribir tests unitarios para cada función pública
+  - Usar test doubles para simular dependencias
+    - Excepto para dependencias de terceros que no son costosas de ejecutar
+- Escribir tests de aceptación para cada módulo
+  - Seguir la convención Given-When-Then
+
+## Específico para Flutter - Pets-Up
+
+### Arquitectura Limpia
+- Usar clean architecture
+- Usar patrón repository para persistencia de datos
+- Usar patrón controller para lógica de negocio con Riverpod
+- Usar Riverpod para manejar estado
+- Usar freezed para manejar estados de UI
+- Controller siempre toma métodos como entrada y actualiza el estado de UI que afecta la UI
+
+### Gestión de Dependencias
+- Usar GetIt para manejar dependencias
+  - Usar singleton para servicios y repositorios
+  - Usar factory para casos de uso
+  - Usar lazy singleton para controllers
+
+### Navegación y Estado
+- Usar AutoRoute para manejar rutas
+  - Usar extras para pasar datos entre páginas
+- Usar Riverpod con keepAlive cuando sea necesario mantener el estado vivo
+- Usar freezed para estados inmutables
+
+### Estructura del Proyecto
+```
+mobile/
+├── lib/
+│   ├── core/               # Configuración y utilidades core
+│   │   ├── config/
+│   │   ├── constants/
+│   │   ├── extensions/
+│   │   └── utils/
+│   ├── features/           # Características por dominio
+│   │   ├── pets/
+│   │   │   ├── data/       # Repositories, data sources
+│   │   │   ├── domain/     # Entities, use cases
+│   │   │   └── presentation/ # Pages, widgets, controllers
+│   │   ├── location/
+│   │   └── reports/
+│   ├── shared/             # Widgets y servicios compartidos
+│   │   ├── widgets/
+│   │   ├── services/
+│   │   └── models/
+│   └── main.dart
+└── test/
+```
+
+### Widgets y UI
+- Cuando un árbol de widgets se vuelve muy profundo, puede llevar a tiempos de construcción más largos y mayor uso de memoria
+- Una estructura de widgets más plana hace que sea más fácil entender y modificar el código
+- Evitar anidar widgets profundamente en Flutter
+- Dividir widgets grandes en componentes más pequeños y reutilizables
+- Utilizar constructores const donde sea posible para reducir reconstrucciones
+- El manejo de estado es más fácil con árboles menos profundos
+
+### Específico para Pets-Up
+
+#### Geolocalización
+- Usar Geolocator para obtener ubicación
+- Solicitar permisos apropiadamente
+- Manejar errores de ubicación gracefully
+- Implementar caché de ubicación para offline
+- Validar coordenadas antes de enviar
+
+#### Cámara y Fotos
+- Usar image_picker para capturar fotos
+- Comprimir imágenes antes de subir
+- Manejar permisos de cámara
+- Implementar preview de fotos
+- Validar tamaño y formato de imágenes
+
+#### Mapas
+- Integrar mapas para mostrar ubicaciones
+- Implementar marcadores para mascotas reportadas
+- Zoom automático basado en ubicación del usuario
+- Clustering para múltiples reportes cercanos
+
+#### Formularios de Reporte
+- Validación en tiempo real
+- Campos obligatorios claramente marcados
+- Guardado automático de borrador
+- Subida de imágenes con progress
+- Confirmación antes de enviar
+
+#### Offline y Sincronización
+- Caché local para reportes
+- Sincronización cuando vuelva la conexión
+- Indicadores de estado de sincronización
+- Manejo de conflictos de datos
+
+#### UI/UX Específica
+- Botón flotante prominente para "Reportar Mascota"
+- Lista de reportes cercanos en home
+- Filtros por tipo de mascota y distancia
+- Notificaciones push para mascotas cercanas
+- Dark mode support
+
+### Testing para Mobile
+- Widget testing para UI components
+- Unit testing para controllers y services
+- Integration testing para flujos completos
+- Golden testing para UI consistency
+- Mocks para servicios de ubicación y cámara
+
+### Ejemplo de Estructura de Feature
+```dart
+// features/pets/presentation/controllers/report_pet_controller.dart
+@riverpod
+class ReportPetController extends _$ReportPetController {
+  @override
+  ReportPetState build() => const ReportPetState.initial();
+
+  Future<void> submitReport(ReportPetParams params) async {
+    // Implementación
+  }
+}
+
+// features/pets/presentation/pages/report_pet_page.dart
+class ReportPetPage extends ConsumerWidget {
+  const ReportPetPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Implementación
+  }
+}
+```
+
+### Performance
+- Usar `const` constructors extensivamente
+- Lazy loading para listas grandes
+- Optimizar imágenes y thumbnails
+- Implementar pagination para reportes
+- Caché inteligente de datos
+
+### Accesibilidad
+- Implementar semantics para screen readers
+- Contraste adecuado de colores
+- Tamaños de tap targets apropiados
+- Navegación por teclado
+- Feedback háptico para acciones importantes 
